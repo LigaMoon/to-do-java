@@ -8,7 +8,7 @@ group = 'com.liga'
 version = '0.0.1-SNAPSHOT'
 
 java {
-	sourceCompatibility = '22'
+	sourceCompatibility = '21'
 }
 
 configurations {
@@ -22,7 +22,7 @@ repositories {
 }
 
 dependencies {
-	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+	implementation 'org.springframework.boot:spring-boot-starter-data-jpa' // Hibernate comes with this
 	implementation 'org.springframework.boot:spring-boot-starter-validation'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	compileOnly 'org.projectlombok:lombok'
@@ -30,7 +30,9 @@ dependencies {
 	runtimeOnly 'com.h2database:h2'
 	annotationProcessor 'org.projectlombok:lombok'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	runtimeOnly 'org.postgresql:postgresql' // for Postgres
 }
+
 
 tasks.named('test') {
 	useJUnitPlatform()
