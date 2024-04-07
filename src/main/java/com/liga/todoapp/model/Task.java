@@ -2,8 +2,6 @@ package com.liga.todoapp.model;
 
 import jakarta.persistence.*;
 
-import javax.print.attribute.DateTimeSyntax;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity
@@ -52,6 +50,8 @@ public class Task {
     public void setCompleted(boolean completed) {
         this.completed = completed;
     }
+
+    public boolean getCompleted() { return completed; }
 
     public LocalDateTime getDueAt() {
         return dueAt;
