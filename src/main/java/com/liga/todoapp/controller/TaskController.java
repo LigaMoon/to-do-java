@@ -43,4 +43,15 @@ public class TaskController {
         taskService.deleteTask(taskId);
     }
 
+    @PatchMapping("/{taskId}/completed")
+    public Task updateTaskStatus(@PathVariable Long taskId, @RequestBody TaskStatus completed) {
+       return taskService.updateTaskStatus(taskId, completed.isCompleted());
+    }
+
+    public static class TaskStatus {
+        private boolean completed;
+        public boolean isCompleted() {
+            return completed;
+        }
+    }
 }

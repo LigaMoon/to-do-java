@@ -21,16 +21,26 @@ function updateTaskList(tasks) {
     const $taskTable = $('#taskTable tbody');
     $taskTable.empty();
 
+    tasks.sort((a, b) => a.taskId - b.taskId);
+
     tasks.forEach(function(task) {
+        const $checkbox = $('<input>').attr('type', 'checkbox').addClass('completed-item').attr('data-id', task.taskId);
+        if (task.completed) {
+            $checkbox.prop('checked', true);
+        }
+
         const $row = $('<tr>').append(
             $('<td>').text(task.title),
-            $('<td>').text(task.completed),
+            $('<td>').addClass('text-center').append($checkbox),
             $('<td>').text(task.dueAt),
             $('<td>').addClass('row justify-content-center').append(
                 $('<button>').addClass('col btn btn-danger btn-sm delete-item mx-1').attr('data-id', task.taskId).text('delete'),
                 $('<button>').addClass('col btn btn-warning btn-sm edit-item mx-1').attr('data-id', task.taskId).text('edit')
             )
         );
+        if (task.completed) {
+                    $row.addClass('complete');
+            }
         $taskTable.append($row);
     });
 }
@@ -112,6 +122,30 @@ $('#taskTable').on('click', '.save-item', function() {
     $.ajax({
             url: `http://localhost:8080/tasks/${taskId}`,
             method: 'PUT',
+            contentType: 'application/json',
+            data: JSON.stringify(taskData),
+            success: function(updatedTask) {
+                console.log("Task added successfully:", updatedTask);
+                fetchTasks();
+            },
+            error: function(xhr, status, error) {
+                console.error("Error adding task:", xhr, status, error);
+            }
+        });
+});
+
+$('#taskTable').on('change', '.completed-item', function() {
+    var $taskRow = $(this).closest('tr');
+    const taskId = $(this).data('id');
+    const completed = $(this).is(':checked');
+
+    const taskData = {
+            completed: completed
+        };
+
+    $.ajax({
+            url: `http://localhost:8080/tasks/${taskId}/completed`,
+            method: 'PATCH',
             contentType: 'application/json',
             data: JSON.stringify(taskData),
             success: function(updatedTask) {

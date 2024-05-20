@@ -1,0 +1,5 @@
+.complete td:first-child {
+    position: relative;
+    color: lightgray;
+    text-decoration: line-through;
+}
