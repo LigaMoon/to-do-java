@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@CrossOrigin(origins = "*") //this allows requests from the FE
 @RestController
 @RequestMapping("/tasks")
 public class TaskController {
@@ -41,7 +42,5 @@ public class TaskController {
     public void deleteTask(@PathVariable Long taskId) {
         taskService.deleteTask(taskId);
     }
-
-
 
 }
