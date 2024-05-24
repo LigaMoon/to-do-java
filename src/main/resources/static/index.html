@@ -14,18 +14,30 @@
     <main>
         <div class="container ">
             <h1 class="text-center my-5">Look at this quest list!</h1>
-            <form id="newTaskForm">
+            <form id="new-task-form">
                 <div class="mb-3 row justify-content-center">
-                    <label for="newTaskTitle" class="col-sm-2 col-form-label visually-hidden">New Task</label>
+                    <label for="new-task-title" class="col-sm-2 col-form-label visually-hidden">New Task</label>
                     <div class="col-sm-5">
-                        <input type="text" class="form-control" id="newTaskTitle" placeholder="Add your new task here" required>
+                        <input type="text" class="form-control" id="new-task-title" placeholder="Add your new task here" required>
+                    </div>
+                    <div class="col-sm-3">
+                        <input class="form-control" id="new-task-date" placeholder="Due Date" type="date">
                     </div>
                     <div class="col-auto">
                         <button type="submit" class="btn btn-dark">Add</button>
                     </div>
                 </div>
             </form>
-            <table id="taskTable" class="mx-auto my-2 table">
+            <div class="row mt-5" id="sort-selectors">
+                <div class="col-2 ms-3">
+                    <span class="align-middle">Sort by:</span>
+                </div>
+                <div class="col">
+                    <button type="button" class="btn btn-sm btn-primary sort-completed">completed</button>
+                    <button type="button" class="btn btn-sm btn-primary sort-due-date">due date</button>
+                </div>
+            </div>
+            <table id="task-table" class="mx-auto my-2 table">
                 <thead>
                 <tr>
                     <th scope="col" class="table-danger text-center">Your next quest</th>

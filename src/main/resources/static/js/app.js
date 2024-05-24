@@ -2,13 +2,19 @@ $(document).ready(function() {
     fetchTasks();
 });
 
-function fetchTasks() {
+function fetchTasks(sortBy) {
     console.log("Fetching tasks...");
     $.ajax({
         url: 'http://localhost:8080/tasks',
         method: 'GET',
         success: function(tasks) {
             console.log("Tasks fetched successfully:", tasks);
+            tasks.sort((a, b) => a.taskId - b.taskId);
+            if (sortBy === 'completed') {
+                tasks.sort((a, b) => a.completed - b.completed);
+            } else if (sortBy === 'dueDate') {
+                tasks.sort((a, b) => new Date(a.dueAt) - new Date(b.dueAt));
+            }
             updateTaskList(tasks);
         },
         error: function(xhr, status, error) {
@@ -18,40 +24,53 @@ function fetchTasks() {
 }
 
 function updateTaskList(tasks) {
-    const $taskTable = $('#taskTable tbody');
+    const $taskTable = $('#task-table tbody');
     $taskTable.empty();
 
-    tasks.sort((a, b) => a.taskId - b.taskId);
-
     tasks.forEach(function(task) {
-        const $checkbox = $('<input>').attr('type', 'checkbox').addClass('completed-item').attr('data-id', task.taskId);
+    const $checkbox = $('<input>')
+                .attr('type', 'checkbox')
+                .addClass('completed-item')
+                .attr('data-id', task.taskId)
+                .prop('checked', task.completed);
+
+        const $editButton = $('<button>')
+            .addClass('col btn btn-warning btn-sm edit-item mx-1')
+            .attr('data-id', task.taskId)
+            .text('edit');
+
         if (task.completed) {
-            $checkbox.prop('checked', true);
+            $editButton.prop('disabled', true);
         }
+
+        const $deleteButton = $('<button>')
+            .addClass('col btn btn-danger btn-sm delete-item mx-1')
+            .attr('data-id', task.taskId)
+            .text('delete');
 
         const $row = $('<tr>').append(
             $('<td>').text(task.title),
             $('<td>').addClass('text-center').append($checkbox),
-            $('<td>').text(task.dueAt),
-            $('<td>').addClass('row justify-content-center').append(
-                $('<button>').addClass('col btn btn-danger btn-sm delete-item mx-1').attr('data-id', task.taskId).text('delete'),
-                $('<button>').addClass('col btn btn-warning btn-sm edit-item mx-1').attr('data-id', task.taskId).text('edit')
-            )
+            $('<td>').text(task.dueAt != null ? task.dueAt : '¯\\_(ツ)_/¯').addClass('text-center'),
+            $('<td>').addClass('row justify-content-center').append($deleteButton,$editButton)
         );
         if (task.completed) {
-                    $row.addClass('complete');
+                $row.addClass('inactive-item');
             }
         $taskTable.append($row);
     });
 }
 
 
-$('#newTaskForm').on('submit', function(e) {
+$('#new-task-form').on('submit', function(e) {
     e.preventDefault(); //for submit to not submit it without the logic below
-    const taskTitle = $('#newTaskTitle').val();
+    const taskTitle = $('#new-task-title').val();
+    const dueAt = $('#new-task-date').val();
+    console.log(dueAt);
 
     const taskData = {
-        title: taskTitle
+        title: taskTitle,
+        dueAt: dueAt
     };
 
     $.ajax({
@@ -62,7 +81,7 @@ $('#newTaskForm').on('submit', function(e) {
             success: function(newTask) {
                 console.log("Task added successfully:", newTask);
                 fetchTasks();
-                $('#newTaskTitle').val('');
+                $('#new-task-form').val('');
             },
             error: function(xhr, status, error) {
                 console.error("Error adding task:", xhr, status, error);
@@ -71,7 +90,7 @@ $('#newTaskForm').on('submit', function(e) {
 });
 
 
-$('#taskTable').on('click', '.delete-item', function() {
+$('#task-table').on('click', '.delete-item', function() {
     const taskId = $(this).data('id');
     console.log(taskId);
 
@@ -93,7 +112,7 @@ $('#taskTable').on('click', '.delete-item', function() {
         });
 });
 
-$('#taskTable').on('click', '.edit-item', function() {
+$('#task-table').on('click', '.edit-item', function() {
     const $editButton = $(this);
     const $taskRow = $(this).closest('tr');
     const $taskTitleCell = $taskRow.find('td:nth-child(1)');
@@ -107,7 +126,7 @@ $('#taskTable').on('click', '.edit-item', function() {
 });
 
 
-$('#taskTable').on('click', '.save-item', function() {
+$('#task-table').on('click', '.save-item', function() {
     const $saveButton = $(this);
     const $taskRow = $(this).closest('tr');
     const taskNewTitle = $taskRow.find('td:nth-child(1) input').val();
@@ -134,10 +153,11 @@ $('#taskTable').on('click', '.save-item', function() {
         });
 });
 
-$('#taskTable').on('change', '.completed-item', function() {
+$('#task-table').on('change', '.completed-item', function() {
     var $taskRow = $(this).closest('tr');
     const taskId = $(this).data('id');
     const completed = $(this).is(':checked');
+
 
     const taskData = {
             completed: completed
@@ -157,3 +177,15 @@ $('#taskTable').on('change', '.completed-item', function() {
             }
         });
 });
+
+$('#sort-selectors').on('click', '.sort-completed', function() {
+    console.log("Hi I am a fancy completed sorter");
+    fetchTasks('completed');
+});
+
+$('#sort-selectors').on('click', '.sort-due-date', function() {
+    console.log("Hi I am a fancy sort by date sorter");
+    fetchTasks('dueDate');
+});
+
+

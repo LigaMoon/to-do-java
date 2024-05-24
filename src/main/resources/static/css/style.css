@@ -1,5 +1,11 @@
-.complete td:first-child {
+.inactive-item td:first-child {
     position: relative;
     color: lightgray;
     text-decoration: line-through;
+}
+
+button:disabled {
+    background-color: lightgray !important;
+    color: gray !important;
+    border-color: lightgray !important;
 }

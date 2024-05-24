@@ -2,6 +2,7 @@ package com.liga.todoapp.model;
 
 import jakarta.persistence.*;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity
@@ -18,20 +19,20 @@ public class Task {
     private boolean completed = false;
 
     @Column(nullable = false)
-    private LocalDateTime createdAt;
+    private LocalDate createdAt;
 
-    private LocalDateTime dueAt;
+    private LocalDate dueAt;
 
     @PrePersist
     protected void onCreate() {
-        createdAt = LocalDateTime.now();
+        createdAt = LocalDate.now();
     }
 
     public Long getTaskId() {
         return taskId;
     }
 
-    public LocalDateTime getCreatedAt() {
+    public LocalDate getCreatedAt() {
         return createdAt;
     }
 
@@ -53,11 +54,11 @@ public class Task {
 
     public boolean getCompleted() { return completed; }
 
-    public LocalDateTime getDueAt() {
+    public LocalDate getDueAt() {
         return dueAt;
     }
 
-    public void setDueAt(LocalDateTime dueAt) {
+    public void setDueAt(LocalDate dueAt) {
         this.dueAt = dueAt;
     }
 }
