@@ -80,8 +80,9 @@ $('#new-task-form').on('submit', function(e) {
             data: JSON.stringify(taskData),
             success: function(newTask) {
                 console.log("Task added successfully:", newTask);
+                $('#new-task-title').val('');
+                $('#new-task-date').val('');
                 fetchTasks();
-                $('#new-task-form').val('');
             },
             error: function(xhr, status, error) {
                 console.error("Error adding task:", xhr, status, error);
